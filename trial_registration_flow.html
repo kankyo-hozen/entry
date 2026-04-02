@@ -868,7 +868,121 @@
     .phase-header { padding: 8px 10px; }
   }
 
-</style>
+
+  /* ========== 書類解説モーダル ========== */
+  .branch-option-docs li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .doc-guide-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+    margin-left: 0;
+    padding: 3px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #1a6abf;
+    background: #e8f0fb;
+    border: 1px solid #a8c4ef;
+    border-radius: 12px;
+    cursor: pointer;
+    vertical-align: middle;
+    white-space: nowrap;
+    transition: background 0.15s;
+    font-family: inherit;
+    line-height: 1.4;
+  }
+  .doc-guide-btn:hover { background: #c8dafc; }
+  .doc-guide-btn:active { background: #b0c8f8; }
+
+  .doc-guide-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .doc-guide-overlay.open {
+    display: flex;
+  }
+  .doc-guide-modal {
+    background: #fff;
+    border-radius: 14px;
+    max-width: 520px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.22);
+    position: relative;
+  }
+  .doc-guide-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    border-radius: 14px 14px 0 0;
+  }
+  .doc-guide-header h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a2235;
+    margin: 0;
+  }
+  .doc-guide-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #666;
+    line-height: 1;
+    padding: 0 4px;
+  }
+  .doc-guide-body {
+    padding: 18px 20px 22px;
+    font-size: 13px;
+    color: #2a3348;
+    line-height: 1.7;
+  }
+  .doc-guide-body .guide-note {
+    font-size: 11.5px;
+    color: #666;
+    margin-top: 4px;
+    padding-left: 1em;
+  }
+  .doc-guide-body ol {
+    padding-left: 1.4em;
+    margin: 8px 0;
+  }
+  .doc-guide-body ol li {
+    margin-bottom: 6px;
+  }
+  .doc-guide-body .guide-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a6abf;
+    margin: 14px 0 6px;
+    padding: 3px 8px;
+    background: #e8f0fb;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  @media (max-width: 480px) {
+    .doc-guide-modal { max-height: 85vh; border-radius: 12px; }
+    .doc-guide-body { font-size: 12px; padding: 14px 16px 18px; }
+  }
+
+  </style>
 </head>
 <body>
 
@@ -1069,7 +1183,7 @@
     <div class="phase-body">
       <div class="node node-keiyaku">
         <span class="node-icon">🔗</span>
-        <span class="node-label">招待メール内のリンクをクリックして登録画面へ</span>
+        <span class="node-label">「環境保全研究所代行システムご利用手続きのご案内」メールからリンクをクリックして登録画面へ</span>
         <span class="node-actor">契</span>
       </div>
       <div class="connector"></div>
@@ -1123,11 +1237,11 @@
         <div class="mail-box-header">📨 【系】登録完了後、メールが2通自動送信される（送信先：本人・上位店・事業部・全国販社）</div>
         <div class="mail-item">
           <span class="mail-badge mail-badge-1">1通目</span>
-          <span>登録完了報告＋注文画面URL（PCサイト・スマホサイト）</span>
+          <span>「環境保全研究所代行システムご登録手続き完了報告」メール＋注文画面URL（PCサイト・スマホサイト）</span>
         </div>
         <div class="mail-item">
           <span class="mail-badge mail-badge-2">2通目</span>
-          <span>【重要】トライアル開始のお知らせ＋証明書類提出案内・アップロードURL</span>
+          <span>「【重要】トライアル開始のお知らせ(契約手続きのお願い)」メール＋証明書類提出案内・アップロードURL</span>
         </div>
       </div>
 
@@ -1135,9 +1249,10 @@
       <div class="timeline-bar">
         <span class="timeline-icon">⏱️</span>
         <div class="timeline-text">
-          <strong>1ヶ月以内に全手続き（フェーズ4〜6）を完了すること</strong><br>
+          <strong>1ヶ月以内に全手続き（フェーズ4〜6）を完了することで正式ランクへ</strong><br>
           DTバッチ：契約番号発行日の翌月同日 19:00 に自動実行。購入可能期限は翌月同日 18:59 まで。<br>
-          例）1月1日発行 → 2月1日 18:59まで購入可　／　2月1日 19:00にDT実行
+          例）1月1日発行 → 2月1日 18:59まで購入可　／　2月1日 19:00にDT実行<br>
+          ⚠️ 期限内に完了しない場合、代行停止（DT）となり、注文が出来なくなります。
         </div>
       </div>
     </div>
@@ -1159,7 +1274,7 @@
         <span class="parallel-lane-title lane-hanbai">4-A：販売者側</span>
         <div class="node node-hanbai" style="margin-bottom:0;">
           <span class="node-icon">🔗</span>
-          <span class="node-label">販売者用フォームにアクセス（QRまたはURL）</span>
+          <span class="node-label">販売者用フォームにアクセス ：<a href="https://forms.gle/qzdy7cZjt2GpnbQJA" target="_blank" style="color:#1a6abf;text-decoration:underline;">https://forms.gle/qzdy7cZjt2GpnbQJA</a></span>
           <span class="node-actor">販</span>
         </div>
         <div class="connector"></div>
@@ -1217,31 +1332,30 @@
             <div class="branch-option branch-opt-tokuya">
               <div class="branch-option-label">❷ 特約（個人）</div>
               <ul class="branch-option-docs">
-                <li>本人確認書類</li>
-                <li>個人事業主証明書類</li>
+                <li><button class="doc-guide-btn" onclick="openDocGuide('honin')">📋 詳細</button> 本人確認書類</li>
+                <li><button class="doc-guide-btn" onclick="openDocGuide('kojin')">📋 詳細</button> 個人事業主証明書類</li>
               </ul>
             </div>
             <div class="branch-option branch-opt-tokuya">
               <div class="branch-option-label">❸ 特約（法人）</div>
               <ul class="branch-option-docs">
-                <li>本人確認書類</li>
-                <li>法人事業者証明書類</li>
+                <li><button class="doc-guide-btn" onclick="openDocGuide('honin')">📋 詳細</button> 本人確認書類</li>
+                <li><button class="doc-guide-btn" onclick="openDocGuide('hojin')">📋 詳細</button> 法人事業者証明書類</li>
               </ul>
             </div>
             <div class="branch-option branch-opt-shop">
               <div class="branch-option-label">❹ SHOP（店舗）</div>
               <ul class="branch-option-docs">
-                <li>本人確認書類</li>
-                <li>個人事業主証明書類</li>
-                <li>店舗営業証明書類（3点）</li>
+                <li><button class="doc-guide-btn" onclick="openDocGuide('honin')">📋 詳細</button> 本人確認書類</li>
+                <li><button class="doc-guide-btn" onclick="openDocGuide('kojin')">📋 詳細</button> 個人事業主証明書類</li>
+                <li><button class="doc-guide-btn" onclick="openDocGuide('tenpo')">📋 詳細</button> 店舗営業証明書類（3点）</li>
               </ul>
             </div>
             <div class="branch-option branch-opt-shop">
               <div class="branch-option-label">❺ SHOP（法人）</div>
               <ul class="branch-option-docs">
-                <li>本人確認書類</li>
-                <li>法人事業者証明書類</li>
-                <li>店舗営業証明書類（3点）</li>
+                <li><button class="doc-guide-btn" onclick="openDocGuide('honin')">📋 詳細</button> 本人確認書類</li>
+                <li><button class="doc-guide-btn" onclick="openDocGuide('hojin')">📋 詳細</button> 法人事業者証明書類</li>
               </ul>
             </div>
           </div>
@@ -1303,17 +1417,20 @@
 
       <!-- 分岐：問題なし or 不備 -->
       <div class="branch-block">
-        <div class="branch-title"><span class="branch-title-icon">🔀</span> 書類に問題はあるか？</div>
+        <div class="branch-title"><span class="branch-title-icon">🔀</span> 書類審査の結果</div>
         <div style="display:flex;gap:10px;">
-          <div style="flex:1;padding:9px 12px;background:var(--ok-bg);border:1.5px solid var(--ok-border);border-radius:8px;font-size:12px;">
-            <strong style="color:var(--keiyaku);display:block;margin-bottom:3px;">✅ 問題なし</strong>
-            3営業日以内に電子契約メールを送信
+          <div style="flex:1;padding:12px 14px;background:var(--ok-bg);border:1.5px solid var(--ok-border);border-radius:8px;font-size:12px;">
+            <strong style="color:var(--keiyaku);display:block;margin-bottom:6px;">✅ 問題なし</strong>
+            <div style="margin-bottom:5px;">📧 <strong>電子契約の方</strong><br>
+            　3営業日以内に電子契約メールを送信</div>
+            <div>📮 <strong>書面契約の方</strong><br>
+            　3営業日以内に郵便で送付</div>
           </div>
-          <div style="flex:1;padding:9px 12px;background:var(--error-bg);border:1.5px solid var(--error-border);border-radius:8px;font-size:12px;">
-            <strong style="color:var(--error-text);display:block;margin-bottom:3px;">⚠️ 不備あり</strong>
+          <div style="flex:1;padding:12px 14px;background:var(--error-bg);border:1.5px solid var(--error-border);border-radius:8px;font-size:12px;">
+            <strong style="color:var(--error-text);display:block;margin-bottom:6px;">⚠️ 不備あり</strong>
             【契】に不備を連絡 → 再提出依頼<br>
-            ↩ PHASE 4-B へ戻る
-            <div class="note-badge">⚠️ 差し戻しフローは別途要設計</div>
+            ↩ PHASE 4-B へ戻る<br>
+            <span style="font-size:11px;color:var(--text-sub);margin-top:5px;display:block;">※ 該当の方へは弊社からご連絡さしあげます。</span>
           </div>
         </div>
       </div>
@@ -1326,77 +1443,87 @@
   <div class="phase">
     <div class="phase-header">
       <span class="phase-num ph6">PHASE 6</span>
-      <span class="phase-title">電子契約締結</span>
+      <span class="phase-title">電子契約締結（書面契約除く）</span>
       <span class="phase-subtitle">手順❺</span>
     </div>
     <div class="phase-body">
+
+      <!-- ノード1：クラウドサイン送信 -->
       <div class="node node-sha">
         <span class="node-icon">📧</span>
         <span class="node-label">
-          freeeサインアプリから電子契約メールを手動送信<br>
+          クラウドサインから電子契約メールを手動送信<br>
           <small style="color:var(--text-sub)">
-            ・【契】へ：電子契約書（署名依頼）<br>
+            ・【契】へ：電子契約書（確認依頼）<br>
             ・【全国販社】へ：契約書見本PDF<br>
-            ※有効期限：送信から7日間
+            ※有効期限：送信から10日間
           </small>
         </span>
         <span class="node-actor">社</span>
       </div>
       <div class="connector"></div>
+
+      <!-- ノード2：クラウドサインからメール受信 -->
       <div class="node node-keiyaku">
         <span class="node-icon">📨</span>
-        <span class="node-label">freeeサイン事務局（<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="046a6b706d6761446a6d6a6e6529776d636a2a676b69">[email&#160;protected]</a>）からメールを受信</span>
+        <span class="node-label">クラウドサイン（support@cloudsign.jp）からメールを受信</span>
         <span class="node-actor">契</span>
       </div>
       <div class="connector"></div>
+
+      <!-- ノード3：同意して確認完了 -->
       <div class="node node-keiyaku">
         <span class="node-icon">🖊️</span>
-        <span class="node-label">「文章を確認する」をクリック・署名する</span>
+        <span class="node-label">「同意して確認完了」をクリック</span>
         <span class="node-actor">契</span>
       </div>
       <div class="connector"></div>
+
+      <!-- ノード4：締結完了メール受信 -->
+      <div class="node node-keiyaku">
+        <span class="node-icon">📩</span>
+        <span class="node-label">
+          「契約書「契約番号_名前_ID番号」の合意締結が完了しました」メールを受信
+        </span>
+        <span class="node-actor">契</span>
+      </div>
+      <div class="connector"></div>
+
+      <!-- ノード5：契約書PDFダウンロード -->
       <div class="node node-keiyaku">
         <span class="node-icon">💾</span>
-        <span class="node-label">契約書PDFをダウンロード・保存する</span>
+        <span class="node-label">メール添付ファイルの契約書PDFをダウンロード・保存する</span>
         <span class="node-actor">契</span>
       </div>
       <div class="connector"></div>
+
+      <!-- ノード6：クラウドサイン確認・承認 -->
       <div class="node node-sha">
         <span class="node-icon">✔️</span>
-        <span class="node-label">freeeサイン上で署名を確認・最終承認（手動）</span>
+        <span class="node-label">クラウドサイン上で確認・承認（手動）<br>
+          <small style="color:var(--text-sub)">※有効期限10日を過ぎるとリンクが無効になります。その場合は、弊社までご連絡ください。</small>
+        </span>
         <span class="node-actor">社</span>
       </div>
       <div class="connector"></div>
 
-      <!-- 分岐：1ヶ月以内か -->
-      <div class="branch-block">
-        <div class="branch-title"><span class="branch-title-icon">⏱️</span> 1ヶ月以内に最終承認は完了しているか？</div>
-        <div style="display:flex;gap:10px;">
-          <div style="flex:1;padding:9px 12px;background:var(--ok-bg);border:1.5px solid var(--ok-border);border-radius:8px;font-size:12px;">
-            <strong style="color:var(--keiyaku);display:block;margin-bottom:3px;">✅ 承認完了（期限内）</strong>
-            完了通知メールを自動送信<br>→ 正式契約へ移行
-          </div>
-          <div style="flex:1;">
-            <div class="dt-warning">
-              <span class="dt-warning-icon">🚫</span>
-              <div class="dt-warning-body">
-                <div class="dt-warning-title">DTバッチ自動実行（期限超過）</div>
-                <div class="dt-warning-desc">
-                  マスターデータを購入不可（DT）に変更<br>
-                  実行：翌月同日 19:00<br>
-                  例）1/1発行 → 2/1 19:00 DT実行
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <!-- ノード7：業務代行クラウドシステム最終承認 -->
+      <div class="node node-sha">
+        <span class="node-icon">✅</span>
+        <span class="node-label">業務代行クラウドシステム上で最終承認（手動）</span>
+        <span class="node-actor">社</span>
       </div>
       <div class="connector"></div>
+
+      <!-- ノード8：完了通知メール自動送信 -->
       <div class="node node-system">
         <span class="node-icon">📨</span>
-        <span class="node-label">契約手続き完了通知メールを自動送信（送信先：本人・上位店・事業部本体・全国販社）</span>
+        <span class="node-label">契約手続き完了通知メールを自動送信<br>
+          <small style="color:var(--text-sub)">送信先：本人・上位店・事業部本体・全国販社</small>
+        </span>
         <span class="node-actor">系</span>
       </div>
+
     </div>
   </div>
 
@@ -1435,7 +1562,53 @@
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script>
+// ========== 書類解説モーダル ==========
+var docGuideData = {
+  honin: {
+    title: 'Ⅳ. 本人確認書類',
+    body: '<p>お申し込み代表者様の本人確認として、次のいずれか1点の写しをご提出ください。</p><ol><li>運転免許証または運転経歴証明書<br><span class="guide-note">（表面、裏面がある場合は両方）</span></li><li>パスポート<br><span class="guide-note">（顔写真および住所の記載があるものに限る）</span></li><li>個人番号カードの表面<br><span class="guide-note">（個人番号部分は不要）</span></li></ol>'
+  },
+  kojin: {
+    title: 'Ⅰ. 個人事業主証明書類',
+    body: '<p>個人事業主の証明として、次のいずれか1点の写しをご提出ください。</p><ol><li>開業届の控え</li><li>確定申告書の第1表<span class="guide-note">（数字部分は黒塗り可）</span></li><li>営業許可証</li><li>WEB掲載情報<span class="guide-note">（ホームページ・SNS・ポータルサイト等）</span></li></ol><p class="guide-note">※ 1〜3の場合：提出書類の「氏名」とお申し込みの「代表者氏名」が一致していること<br>※ 4の場合：「屋号」「代表者氏名」「所在地」がWEB上で確認でき、お申し込み内容と一致していること</p>'
+  },
+  hojin: {
+    title: 'Ⅲ. 法人事業者証明書類',
+    body: '<p>法人事業者の証明として、次の書類の写しをご提出ください。</p><ol><li>登記事項証明書<span class="guide-note">（発行日から3ヶ月以内のもの）</span></li></ol>'
+  },
+  tenpo: {
+    title: 'Ⅱ. 店舗営業証明書類',
+    body: '<p>店舗営業者の証明として、「個人事業主証明書類（Ⅰ）」に加え、下記の3点をご提出ください。</p><ol start="5"><li>本製品が陳列販売されている、またはそのためのスペースが確保されていることがわかる<strong>店内写真</strong></li><li>本登録店舗の固定的設備と商いが行われていることが明らかな<strong>店内写真</strong></li><li>屋号と店舗が確認できる<strong>外観写真</strong></li></ol><p class="guide-note">※ 個人事業主証明書類（1〜4のいずれか）に加え、5・6・7をご提出ください。</p>'
+  }
+};
+
+function openDocGuide(type) {
+  var data = docGuideData[type];
+  if (!data) return;
+  document.getElementById('docGuideTitle').textContent = data.title;
+  document.getElementById('docGuideBody').innerHTML = data.body;
+  document.getElementById('docGuideOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDocGuide(e) {
+  if (e.target === document.getElementById('docGuideOverlay')) {
+    closeDocGuideBtn();
+  }
+}
+
+function closeDocGuideBtn() {
+  document.getElementById('docGuideOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeDocGuideBtn();
+});
+
+
 var lbState = {};
 
 function openLightbox(id) {
@@ -1513,5 +1686,16 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'ArrowLeft') prevSlide(openId);
 });
 </script>
+
+<!-- ========== 書類解説モーダル ========== -->
+<div class="doc-guide-overlay" id="docGuideOverlay" onclick="closeDocGuide(event)">
+  <div class="doc-guide-modal" id="docGuideModal">
+    <div class="doc-guide-header">
+      <h3 id="docGuideTitle">書類について</h3>
+      <button class="doc-guide-close" onclick="closeDocGuideBtn()">✕</button>
+    </div>
+    <div class="doc-guide-body" id="docGuideBody"></div>
+  </div>
+</div>
 </body>
 </html>
