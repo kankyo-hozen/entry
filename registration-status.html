@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>お申込み状況確認</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f1f3d;
+    --navy-mid: #1a3260;
+    --accent: #2563c8;
+    --accent-light: #ddeaff;
+    --gold: #b8952a;
+    --success: #1a7a4a;
+    --success-light: #d4f0e3;
+    --muted: #64748b;
+    --border: #dde3ef;
+    --bg: #f5f7fc;
+    --white: #ffffff;
+    --text: #1e2a3b;
+    --step-done: #1a7a4a;
+    --step-active: #2563c8;
+    --step-pending: #b0bcd4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--navy);
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(15,31,61,0.18);
+  }
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    color: var(--white);
+    font-size: 1.25rem;
+    letter-spacing: 0.04em;
+  }
+  .logo span { color: #7eb4ff; }
+  .header-badge {
+    background: rgba(255,255,255,0.1);
+    color: #c8d8f5;
+    font-size: 0.75rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.06em;
+  }
+
+  /* HERO SECTION */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    padding: 48px 24px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: rgba(37,99,200,0.15);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(184,149,42,0.1);
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(37,99,200,0.3);
+    color: #90b8ff;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    color: var(--white);
+    font-size: 1.9rem;
+    font-weight: 400;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero p {
+    color: #9db5d8;
+    font-size: 0.88rem;
+    font-weight: 300;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* CONTRACT ID INPUT */
+  .search-section {
+    max-width: 540px;
+    margin: -28px auto 0;
+    padding: 0 20px;
+    position: relative;
+    z-index: 10;
+  }
+  .search-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 8px 40px rgba(15,31,61,0.14);
+    border: 1px solid var(--border);
+  }
+  .search-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .search-row {
+    display: flex;
+    gap: 10px;
+  }
+  .search-input {
+    flex: 1;
+    height: 46px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 0 16px;
+    font-size: 1rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--text);
+    transition: border-color 0.2s;
+    outline: none;
+    letter-spacing: 0.08em;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: #b0bcd4; }
+  .search-btn {
+    height: 46px;
+    padding: 0 22px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .search-btn:hover { background: #1a4fa8; }
+  .search-btn:active { transform: scale(0.97); }
+
+  /* MAIN CONTENT */
+  .main {
+    max-width: 700px;
+    margin: 32px auto;
+    padding: 0 20px 60px;
+  }
+
+  /* INFO STRIP */
+  .info-strip {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .info-chip {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    flex: 1;
+    min-width: 140px;
+  }
+  .info-chip-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .info-chip-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .info-chip-value.highlight { color: var(--accent); }
+
+  /* STATUS BANNER */
+  .status-banner {
+    background: linear-gradient(135deg, #e8f0fe 0%, #ddeaff 100%);
+    border: 1.5px solid #b8cfff;
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .status-icon {
+    width: 44px; height: 44px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.2rem;
+  }
+  .status-text-main {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--navy);
+  }
+  .status-text-sub {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    margin-bottom: 28px;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .progress-track {
+    height: 8px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #5b90ff);
+    border-radius: 99px;
+    transition: width 0.6s ease;
+  }
+
+  /* STEPS */
+  .steps-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .step-item {
+    display: flex;
+    gap: 0;
+    position: relative;
+    margin-bottom: 0;
+  }
+
+  .step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 44px;
+    flex-shrink: 0;
+  }
+  .step-circle {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s;
+  }
+  .step-circle.done {
+    background: var(--success);
+    color: white;
+    box-shadow: 0 0 0 4px var(--success-light);
+  }
+  .step-circle.active {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 0 0 4px var(--accent-light);
+    animation: pulse-ring 2s infinite;
+  }
+  .step-circle.pending {
+    background: var(--white);
+    color: var(--step-pending);
+    border: 2px solid var(--border);
+  }
+
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 4px rgba(37,99,200,0.25); }
+    50% { box-shadow: 0 0 0 8px rgba(37,99,200,0.1); }
+    100% { box-shadow: 0 0 0 4px rgba(37,99,200,0.25); }
+  }
+
+  .step-line {
+    width: 2px;
+    flex: 1;
+    min-height: 24px;
+    margin: 4px 0;
+  }
+  .step-line.done { background: var(--success); }
+  .step-line.active { background: linear-gradient(180deg, var(--accent) 0%, var(--border) 100%); }
+  .step-line.pending { background: var(--border); }
+  .step-line.last { display: none; }
+
+  .step-body {
+    flex: 1;
+    padding: 0 0 24px 16px;
+  }
+  .step-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    cursor: pointer;
+  }
+  .step-card:hover { box-shadow: 0 4px 20px rgba(37,99,200,0.08); }
+  .step-card.active-card {
+    border-color: var(--accent);
+    box-shadow: 0 4px 24px rgba(37,99,200,0.12);
+  }
+  .step-card.done-card {
+    border-color: #b5ddc9;
+    background: #fafffe;
+  }
+
+  .step-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .step-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+  .step-name.pending-text { color: var(--muted); }
+  .step-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge-done { background: var(--success-light); color: var(--success); }
+  .badge-active { background: var(--accent-light); color: var(--accent); }
+  .badge-pending { background: #f1f4fb; color: var(--muted); }
+
+  .step-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 8px;
+    line-height: 1.65;
+    display: none;
+  }
+  .step-desc.visible { display: block; }
+
+  .step-meta {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .step-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.76rem;
+    color: var(--muted);
+  }
+  .step-meta-icon { font-size: 0.85rem; }
+
+  .step-date {
+    font-size: 0.75rem;
+    color: var(--success);
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
+  /* CONTACT CARD */
+  .contact-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    margin-top: 28px;
+  }
+  .contact-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .contact-avatar {
+    width: 44px; height: 44px;
+    background: var(--accent-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .contact-info-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .contact-info-links {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .contact-link {
+    font-size: 0.8rem;
+    color: var(--accent);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .contact-link:hover { text-decoration: underline; }
+
+  /* NOTICE */
+  .notice {
+    background: #fffbec;
+    border: 1px solid #f0d87a;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 20px;
+    font-size: 0.8rem;
+    color: #7a5c00;
+    line-height: 1.7;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+
+  /* DEMO TOGGLE */
+  .demo-bar {
+    background: #fef3c7;
+    border-bottom: 1px solid #fcd34d;
+    padding: 8px 20px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #92400e;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .demo-btn {
+    background: #92400e;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 3px 12px;
+    font-size: 0.75rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .demo-btn:hover { background: #78350f; }
+  .demo-btn.active-demo { background: var(--accent); }
+
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 1.5rem; }
+    .info-chip { min-width: 120px; }
+    .step-card { padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- DEMO BAR -->
+<div class="demo-bar">
+  📋 デモ表示：ステップを切り替えてご確認ください
+  <button class="demo-btn active-demo" onclick="setDemo(3)">ステップ3（書類提出待ち）</button>
+  <button class="demo-btn" onclick="setDemo(5)">ステップ5（電子契約署名待ち）</button>
+  <button class="demo-btn" onclick="setDemo(7)">ステップ7（完了間近）</button>
+</div>
+
+<header>
+  <div class="logo">My<span>Registration</span></div>
+  <div class="header-badge">お申込み状況確認</div>
+</header>
+
+<div class="hero">
+  <div class="hero-tag">Registration Status</div>
+  <h1>お申込み状況確認</h1>
+  <p>契約番号を入力して、現在の手続き状況をご確認いただけます</p>
+</div>
+
+<div class="search-section">
+  <div class="search-card">
+    <label class="search-label">契約番号</label>
+    <div class="search-row">
+      <input class="search-input" id="contractInput" type="text" placeholder="例：REG-2024-00123" value="REG-2024-00123">
+      <button class="search-btn" onclick="loadStatus()">確認する</button>
+    </div>
+  </div>
+</div>
+
+<div class="main" id="mainContent">
+
+  <!-- INFO STRIP -->
+  <div class="info-strip">
+    <div class="info-chip">
+      <div class="info-chip-label">契約番号</div>
+      <div class="info-chip-value highlight" id="displayContractId">REG-2024-00123</div>
+    </div>
+    <div class="info-chip">
+      <div class="info-chip-label">お申込み日</div>
+      <div class="info-chip-value" id="displayStartDate">2025年3月18日</div>
+    </div>
+    <div class="info-chip">
+      <div class="info-chip-label">完了目安</div>
+      <div class="info-chip-value" id="displayEstDate">2025年4月8日</div>
+    </div>
+  </div>
+
+  <!-- STATUS BANNER -->
+  <div class="status-banner" id="statusBanner">
+    <div class="status-icon" id="statusIcon">⏳</div>
+    <div>
+      <div class="status-text-main" id="statusMain">書類提出をお待ちしています</div>
+      <div class="status-text-sub" id="statusSub">次のステップ：Googleフォームより必要書類をご提出ください</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span>進捗状況</span>
+      <span id="progressLabel">3 / 8 完了</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:37.5%"></div>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-title">手続きステップ</div>
+  <div id="stepsContainer"></div>
+
+  <!-- CONTACT -->
+  <div class="contact-card">
+    <div class="contact-title">担当者・お問い合わせ</div>
+    <div class="contact-row">
+      <div class="contact-avatar">👤</div>
+      <div>
+        <div class="contact-info-name">登録サポート窓口</div>
+        <div class="contact-info-links">
+          <a class="contact-link" href="mailto:daikomailadm@kankyo-hozen.com">✉️ daikomailadm@kankyo-hozen.com</a>
+          <a class="contact-link" href="tel:0120000000">📞 0120-000-000</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notice">
+    ⚠️ 各ステップの完了後、自動的にメールでお知らせします。ご不明な点がございましたら、担当窓口までお気軽にお問い合わせください。
+  </div>
+
+</div>
+
+<footer>
+  © 2025 MyRegistration. 本ページはお客様専用の進捗確認ページです。
+</footer>
+
+<script>
+  const steps = [
+    {
+      name: "QRコード招待",
+      desc: "担当者よりQRコードをご案内し、お申込み手続きを開始いたします。",
+      days: "1日以内",
+      icon: "📱"
+    },
+    {
+      name: "招待URLからWeb画面登録",
+      desc: "送付したURLよりお客様情報のご入力・Web登録を行っていただきます。",
+      days: "1〜2日",
+      icon: "💻"
+    },
+    {
+      name: "Googleフォームから書類提出",
+      desc: "必要書類をGoogleフォームよりアップロードしてご提出ください。提出後、担当者が内容を確認いたします。",
+      days: "2〜3日",
+      icon: "📄"
+    },
+    {
+      name: "書類確認・審査",
+      desc: "ご提出いただいた書類の内容確認・審査を行います。不備がある場合はメールにてご連絡いたします。",
+      days: "3〜5日",
+      icon: "🔍"
+    },
+    {
+      name: "電子契約書送付",
+      desc: "審査完了後、電子契約書をメールにてお送りします。内容をご確認の上、ご署名ください。",
+      days: "1日以内",
+      icon: "📝"
+    },
+    {
+      name: "お客様のご署名",
+      desc: "電子契約書にお客様のご署名をいただきます。メールのリンクよりお手続きください。",
+      days: "1〜2日",
+      icon: "✍️"
+    },
+    {
+      name: "弊社署名・承認",
+      desc: "お客様のご署名確認後、弊社担当者が署名・最終承認を行います。",
+      days: "1〜2日",
+      icon: "🏢"
+    },
+    {
+      name: "基幹システム登録完了",
+      desc: "すべての手続きが完了し、システムへの登録が正式に完了となります。完了通知をメールにてお送りします。",
+      days: "1日以内",
+      icon: "✅"
+    }
+  ];
+
+  // Demo dates
+  const completedDates = [
+    "3月18日 完了",
+    "3月19日 完了",
+    null, null, null, null, null, null
+  ];
+
+  let currentActiveStep = 3; // 0-indexed, so step 4 (書類提出) is active
+
+  function setDemo(stepNum) {
+    currentActiveStep = stepNum - 1;
+    // Update demo button styles
+    document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active-demo'));
+    event.target.classList.add('active-demo');
+    renderAll();
+  }
+
+  function loadStatus() {
+    const id = document.getElementById('contractInput').value.trim();
+    document.getElementById('displayContractId').textContent = id || 'REG-2024-00123';
+    renderAll();
+  }
+
+  function renderAll() {
+    const completed = currentActiveStep;
+    const total = steps.length;
+
+    // Progress
+    const pct = Math.round((completed / total) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = completed + ' / ' + total + ' 完了';
+
+    // Status banner
+    const s = steps[currentActiveStep];
+    const icons = ['⏳','⏳','⏳','🔍','⏳','✍️','⏳','🎉'];
+    document.getElementById('statusIcon').textContent = icons[currentActiveStep] || '⏳';
+    document.getElementById('statusMain').textContent = '現在：' + s.name;
+    document.getElementById('statusSub').textContent =
+      currentActiveStep < total - 1
+        ? '次のステップ：' + steps[currentActiveStep + 1].name
+        : '全手続きが完了しました。ありがとうございます！';
+
+    // Steps
+    const container = document.getElementById('stepsContainer');
+    container.innerHTML = '';
+    steps.forEach((step, i) => {
+      const isDone = i < currentActiveStep;
+      const isActive = i === currentActiveStep;
+      const isPending = i > currentActiveStep;
+      const isLast = i === steps.length - 1;
+
+      const stateClass = isDone ? 'done' : isActive ? 'active' : 'pending';
+      const badgeText = isDone ? '完了' : isActive ? '対応中' : '待機中';
+      const badgeClass = isDone ? 'badge-done' : isActive ? 'badge-active' : 'badge-pending';
+      const cardClass = isDone ? 'done-card' : isActive ? 'active-card' : '';
+      const nameClass = isPending ? 'pending-text' : '';
+
+      const circleContent = isDone
+        ? '✓'
+        : isActive
+        ? step.icon
+        : (i + 1);
+
+      const descVisible = (isActive || isDone) ? 'visible' : '';
+
+      const dateHtml = isDone && completedDates[i]
+        ? `<div class="step-date">✅ ${completedDates[i]}</div>`
+        : '';
+
+      const lineClass = isLast ? 'last' : (isDone ? 'done' : isActive ? 'active' : 'pending');
+
+      container.innerHTML += `
+        <div class="step-item">
+          <div class="step-left">
+            <div class="step-circle ${stateClass}">${circleContent}</div>
+            <div class="step-line ${lineClass}"></div>
+          </div>
+          <div class="step-body">
+            <div class="step-card ${cardClass}" onclick="toggleDesc(this)">
+              <div class="step-header">
+                <div class="step-name ${nameClass}">${step.name}</div>
+                <span class="step-badge ${badgeClass}">${badgeText}</span>
+              </div>
+              <div class="step-desc ${descVisible}">${step.desc}</div>
+              <div class="step-meta">
+                <div class="step-meta-item">
+                  <span class="step-meta-icon">🕐</span>
+                  <span>目安：${step.days}</span>
+                </div>
+              </div>
+              ${dateHtml}
+            </d
