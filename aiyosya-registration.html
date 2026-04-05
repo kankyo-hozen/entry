@@ -181,7 +181,7 @@
     align-items: center;
     opacity: 0;
     transform: translateY(16px) scale(.97);
-    transition: opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1);
+    transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
   }
   .flow-node.show { opacity: 1; transform: translateY(0) scale(1); }
   .flow-box {
@@ -1224,9 +1224,9 @@ goTo(0);
   // 静止1000ms → フロー開始 = 3300ms後
   const POP_INTERVAL  = 575;
   const BADGE_TIME    = 3400; // ポップ完了後にバッジ表示
-  const FLOW_START    = 3900; // バッジ表示0.8秒後にフロー開始
+  const FLOW_START    = 5000; // バッジ表示1.6秒後にフロー開始（余裕を持たせる）
   const FLOW_DELAYS   = [0, 700, 1400, 2100, 2900, 3600, 4300, 5000, 5600];
-  const LOOP_TOTAL    = 14000; // ループ全体(待機1s + pop2.3s + 静止1s + flow5.6s + 余白)
+  const LOOP_TOTAL    = 15500; // ループ全体(待機1s + pop2.3s + バッジ1.6s + flow5.6s + 余白)
 
   function resetAll() {
     HB_ITEMS.forEach(id   => document.getElementById(id).classList.remove('pop'));
