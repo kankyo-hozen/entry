@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>愛用者登録 | 株式会社 環境保全研究所</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink:    #E8407A;
+    --pink-d:  #C4305E;
+    --pink-l:  #F9C6D8;
+    --yellow:  #F5C842;
+    --white:   #FFFFFF;
+    --off:     #FFF5F8;
+    --text:    #2A1220;
+    --gray:    #888;
+    --step-dur: 4000ms;    /* 1ステップ表示時間 */
+    --anim-dur: 600ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--off);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ========== HERO ========== */
+  .hero {
+    background: var(--pink);
+    position: relative;
+    overflow: visible;
+    padding: 16px 24px 24px;
+    text-align: center;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 80% 20%, rgba(255,255,255,.18) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(196,48,94,.6) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-title-row {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 2px;
+  }
+  .hero-icon {
+    width: 48px; height: 48px;
+    background: var(--white);
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 6px 20px rgba(0,0,0,.2);
+  }
+  .hero-icon svg { width: 32px; height: 32px; fill: var(--pink); }
+  .hero h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(1.8rem, 7vw, 2.8rem);
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: .04em;
+    line-height: 1.1;
+    margin: 0;
+    position: relative;
+  }
+  .hero h1 span {
+    display: inline-block;
+    background: var(--yellow);
+    color: var(--pink-d);
+    padding: 2px 16px;
+    border-radius: 4px;
+    font-size: clamp(1.4rem, 6vw, 2.2rem);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .hero-sub {
+    color: rgba(255,255,255,.9);
+    font-size: clamp(.85rem, 3vw, 1rem);
+    margin-top: 6px;
+    position: relative;
+    line-height: 1.7;
+  }
+  .hero-sub strong { color: var(--yellow); font-weight: 700; }
+
+  /* ========== BENEFIT POP (HERO内) ========== */
+  .hero-benefits {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    margin: 8px auto 2px;
+    max-width: 400px;
+    padding: 0 8px;
+  }
+  .hb-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    opacity: 0;
+    transform: scale(.7);
+    transition: opacity .35s ease, transform .35s cubic-bezier(.34,1.56,.64,1);
+    flex: 1;
+    min-width: 0;
+  }
+  .hb-item.pop { opacity: 1; transform: scale(1); }
+  .hb-icon {
+    width: 40px; height: 40px;
+    background: rgba(255,255,255,.2);
+    border: 2px solid rgba(255,255,255,.6);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .hb-icon svg { width: 20px; height: 20px; fill: #fff; }
+  .hb-label {
+    font-size: clamp(.62rem, 2.5vw, .75rem);
+    color: rgba(255,255,255,.95);
+    text-align: center;
+    line-height: 1.4;
+    font-weight: 700;
+  }
+  .hb-label small {
+    display: block;
+    font-weight: 400;
+    font-size: clamp(.58rem, 2vw, .68rem);
+    color: rgba(255,255,255,.75);
+  }
+
+  /* ========== FLOW ANIMATION ========== */
+  .flow-wrap {
+    margin-top: 8px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 360px;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+  .flow-node {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity .55s ease, transform .55s ease;
+  }
+  .flow-node.show { opacity: 1; transform: translateY(0); }
+  .flow-box {
+    /* サイズ完全統一：幅・高さ固定 */
+    width: 100%;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,.15);
+    border: 2px solid rgba(255,255,255,.5);
+    border-radius: 14px;
+    padding: 0 16px;
+    text-align: center;
+    color: #fff;
+    font-size: clamp(.82rem, 3.5vw, .93rem);
+    line-height: 1.5;
+    box-sizing: border-box;
+    backdrop-filter: blur(4px);
+    overflow: hidden;
+  }
+  .flow-box .amt {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(1rem, 4.5vw, 1.3rem);
+    font-weight: 700;
+    color: var(--yellow);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .flow-box.hl {
+    background: var(--yellow);
+    border-color: var(--yellow);
+    color: var(--pink-d);
+    box-shadow: 0 6px 24px rgba(245,200,66,.5);
+  }
+  .flow-box.hl .amt {
+    color: var(--pink-d);
+    font-size: clamp(1rem, 4.5vw, 1.3rem); /* hlも同サイズに統一 */
+  }
+  .flow-box.ext::before { content: ''; }
+  .badge-m {
+    display: inline-block;
+    background: var(--pink-d);
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 700;
+    padding: 2px 12px;
+    border-radius: 99px;
+    margin-top: 6px;
+    letter-spacing: .05em;
+  }
+  .flow-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1px 0;
+    opacity: 0;
+    transition: opacity .4s ease;
+  }
+  .flow-arrow.show { opacity: 1; }
+  .flow-arrow .aline { width: 2px; height: 10px; background: rgba(255,255,255,.45); }
+  .flow-arrow .ahead {
+    width: 0; height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 10px solid rgba(255,255,255,.55);
+  }
+
+  /* ========== BENEFITS BAR ========== */
+  .benefits {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 28px 16px;
+    background: var(--white);
+    border-bottom: 3px solid var(--pink-l);
+  }
+  .benefit-card {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 8px;
+    background: var(--off);
+    border-radius: 16px;
+    padding: 16px 20px;
+    min-width: 120px;
+    flex: 1 1 100px;
+    max-width: 160px;
+    border: 2px solid var(--pink-l);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .benefit-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(232,64,122,.15); }
+  .benefit-icon {
+    width: 52px; height: 52px;
+    background: var(--pink);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 3px solid var(--yellow);
+  }
+  .benefit-icon svg { width: 26px; height: 26px; fill: var(--white); }
+  .benefit-label {
+    font-size: .72rem;
+    color: var(--gray);
+    text-align: center;
+    line-height: 1.4;
+  }
+  .benefit-label strong {
+    display: block;
+    font-size: .95rem;
+    color: var(--pink-d);
+    font-weight: 900;
+  }
+
+  /* ========== SECTION TITLE ========== */
+  .section-title {
+    text-align: center;
+    padding: 36px 16px 8px;
+  }
+  .section-title h2 {
+    font-size: clamp(1.2rem, 5vw, 1.6rem);
+    font-weight: 900;
+    color: var(--pink-d);
+    letter-spacing: .05em;
+  }
+  .section-title p {
+    font-size: .85rem;
+    color: var(--gray);
+    margin-top: 6px;
+  }
+
+  /* ========== STEP PLAYER ========== */
+  .player-wrap {
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 0 16px 48px;
+  }
+
+  /* progress bar */
+  .progress-bar-wrap {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    padding: 0 4px;
+  }
+  .progress-segment {
+    flex: 1;
+    height: 6px;
+    background: var(--pink-l);
+    border-radius: 99px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .progress-segment .fill {
+    height: 100%;
+    width: 0;
+    background: var(--pink);
+    border-radius: 99px;
+    transition: width 80ms linear;
+  }
+  .progress-segment.done .fill { width: 100%; }
+  .progress-segment.active .fill { width: 0; animation: none; } /* JS driven */
+
+  /* step card */
+  .step-card {
+    background: var(--white);
+    border-radius: 24px;
+    padding: 32px 28px;
+    box-shadow: 0 4px 32px rgba(232,64,122,.12);
+    border: 2px solid var(--pink-l);
+    min-height: 320px;
+    position: relative;
+    overflow: hidden;
+  }
+  .step-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 120px; height: 120px;
+    background: var(--pink-l);
+    border-radius: 50%;
+    opacity: .4;
+  }
+
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .step-num .num-badge {
+    width: 44px; height: 44px;
+    background: var(--pink);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--white);
+    box-shadow: 0 4px 12px rgba(232,64,122,.4);
+    flex-shrink: 0;
+  }
+  .step-num .num-label {
+    font-size: .78rem;
+    color: var(--pink);
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  .step-title {
+    font-size: clamp(1.3rem, 5vw, 1.7rem);
+    font-weight: 900;
+    color: var(--pink-d);
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+  .step-body {
+    font-size: clamp(.88rem, 3vw, .97rem);
+    line-height: 1.8;
+    color: var(--text);
+  }
+  .step-body .note {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: .82rem;
+    color: var(--gray);
+    background: var(--off);
+    border-left: 3px solid var(--pink);
+    padding: 6px 12px;
+    border-radius: 0 8px 8px 0;
+  }
+  .step-body .substeps {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .step-body .substep {
+    background: var(--pink-l);
+    color: var(--pink-d);
+    font-size: .8rem;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 99px;
+    border: 1.5px solid var(--pink);
+  }
+  .step-body .links {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .step-body .link-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--pink);
+    color: var(--white);
+    font-size: .85rem;
+    font-weight: 700;
+    padding: 8px 18px;
+    border-radius: 99px;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(232,64,122,.35);
+  }
+
+  /* illustration area */
+  .step-illus {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  /* animation classes */
+  .step-inner {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity var(--anim-dur) ease, transform var(--anim-dur) ease;
+  }
+  .step-inner.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* controls */
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .ctrl-btn {
+    background: var(--white);
+    border: 2px solid var(--pink);
+    color: var(--pink);
+    border-radius: 99px;
+    padding: 10px 22px;
+    font-size: .9rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: background .15s, color .15s;
+  }
+  .ctrl-btn:hover { background: var(--pink); color: var(--white); }
+  .ctrl-btn:disabled { opacity: .35; cursor: default; }
+  .ctrl-btn.play-pause {
+    background: var(--pink);
+    color: var(--white);
+    padding: 10px 28px;
+  }
+  .ctrl-btn.play-pause:hover { background: var(--pink-d); border-color: var(--pink-d); }
+
+  .step-counter {
+    font-size: .82rem;
+    color: var(--gray);
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  /* ========== FOOTER ========== */
+  .footer {
+    background: var(--pink-d);
+    color: rgba(255,255,255,.75);
+    text-align: center;
+    padding: 28px 16px;
+    font-size: .8rem;
+    line-height: 1.8;
+  }
+  .footer strong { color: var(--white); display: block; font-size: .95rem; margin-bottom: 4px; }
+
+  /* ========== SVG illustrations ========== */
+  .illus-qr {
+    display: inline-block;
+    width: 80px; height: 80px;
+    position: relative;
+  }
+
+  /* pulse ring for QR */
+  @keyframes pulse-ring {
+    0%   { transform: scale(1); opacity: .7; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+  .qr-ring {
+    position: absolute; inset: -10px;
+    border-radius: 50%;
+    border: 3px solid var(--pink);
+    animation: pulse-ring 1.4s ease-out infinite;
+  }
+
+  /* mail bounce */
+  @keyframes mail-bounce {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-12px); }
+  }
+  .illus-mail { animation: mail-bounce 1.6s ease-in-out infinite; }
+
+  /* steps slide */
+  @keyframes steps-slide {
+    0%,20% { transform: translateX(0); }
+    33%,53% { transform: translateX(-100%); }
+    66%,86% { transform: translateX(-200%); }
+    100%    { transform: translateX(-300%); }
+  }
+
+  /* check pop */
+  @keyframes check-pop {
+    0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
+    60%  { transform: scale(1.2) rotate(5deg);  opacity: 1; }
+    100% { transform: scale(1) rotate(0deg);    opacity: 1; }
+  }
+  .check-pop { animation: check-pop .6s .3s both; }
+
+  /* responsive */
+  @media (max-width: 420px) {
+    .step-card { padding: 24px 18px; }
+    .benefit-card { max-width: 130px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-title-row">
+    <div class="hero-icon">
+      <svg viewBox="0 0 40 40"><circle cx="20" cy="13" r="8"/><path d="M4 36c0-8.837 7.163-16 16-16s16 7.163 16 16H4z"/></svg>
+    </div>
+    <h1>愛用者登録 <span>10% OFF</span></h1>
+  </div>
+
+  <!-- BENEFITS POP -->
+  <div class="hero-benefits">
+    <div class="hb-item" id="hb0">
+      <div class="hb-icon">
+        <svg viewBox="0 0 24 24"><path d="M17 2H7C5.9 2 5 2.9 5 4v16c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-5 18c-.83 0-1.5-.67-1.5-1.5S11.17 17 12 17s1.5.67 1.5 1.5S12.83 20 12 20zm5-4H7V4h10v12z"/></svg>
+      </div>
+      <div class="hb-label">ネットで注文<small>いつでも簡単</small></div>
+    </div>
+    <div class="hb-item" id="hb1">
+      <div class="hb-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+      </div>
+      <div class="hb-label">クレジット決済<small>現金 or カード</small></div>
+    </div>
+    <div class="hb-item" id="hb2">
+      <div class="hb-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/></svg>
+      </div>
+      <div class="hb-label">ポイント付与<small>100円で1P</small></div>
+    </div>
+    <div class="hb-item" id="hb3">
+      <div class="hb-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+      </div>
+      <div class="hb-label">送料無料<small>20,000円以上</small></div>
+    </div>
+  </div>
+
+  <div style="margin: 8px auto 0; display:inline-block; background:rgba(255,255,255,.2); border:1.5px solid rgba(255,255,255,.55); border-radius:99px; padding:4px 14px; font-size:clamp(.8rem,3vw,.9rem); color:#fff; font-weight:700; letter-spacing:.03em;">
+    🕐 登録はたったの <span style="color:var(--yellow);">3分</span> で完了！
+  </div>
+
+  <p class="hero-sub" style="margin-top:6px;">購入額と期間の仕組みをご確認ください。</p>
+
+  <!-- FLOW -->
+  <div class="flow-wrap">
+
+    <div class="flow-node" id="fn0">
+      <div class="flow-box">
+        <span class="amt">初回 20,000円以上</span>
+        定価でご購入
+      </div>
+    </div>
+
+    <div class="flow-arrow" id="fa0">
+      <div class="aline"></div><div class="ahead"></div>
+    </div>
+
+    <div class="flow-node" id="fn1">
+      <div class="flow-box hl">
+        <span class="amt">10% OFF 開始！</span>
+        3カ月間 適用
+      </div>
+    </div>
+
+    <div class="flow-arrow" id="fa1">
+      <div class="aline"></div><div class="ahead"></div>
+    </div>
+
+    <div class="flow-node" id="fn2">
+      <div class="flow-box ext">
+        <span class="amt">🔄 期間中 累計 20,000円以上</span>
+        追加ご購入で…
+      </div>
+    </div>
+
+    <div class="flow-arrow" id="fa2">
+      <div class="aline"></div><div class="ahead"></div>
+    </div>
+
+    <div class="flow-node" id="fn3">
+      <div class="flow-box">
+        <span class="amt">＋ 3カ月 延長！</span>
+        <span class="badge-m">10%OFF がさらに続く</span>
+      </div>
+    </div>
+
+    <div class="flow-arrow" id="fa3">
+      <div class="aline"></div><div class="ahead"></div>
+    </div>
+
+    <div class="flow-node" id="fn4">
+      <div class="flow-box" style="background:rgba(255,255,255,.9);border-color:#fff;color:var(--pink-d);font-weight:700;">
+        <span style="font-size:.8rem;letter-spacing:.05em;color:var(--pink);display:block;margin-bottom:3px;">▼ まずはご登録から</span>
+        <span style="font-family:'Oswald',sans-serif;font-size:clamp(1rem,4vw,1.2rem);font-weight:700;">登録手順はこちら ↓</span>
+      </div>
+    </div>
+
+  </div><!-- /flow-wrap -->
+</section>
+
+
+<!-- STEP PLAYER -->
+<div class="section-title">
+  <h2>📋 ご登録の手順</h2>
+  <p>タイマーで自動再生 ／ ボタンで手動操作もできます</p>
+</div>
+
+<div class="player-wrap">
+  <!-- Progress segments -->
+  <div class="progress-bar-wrap" id="progressBar">
+    <div class="progress-segment" data-idx="0"><div class="fill"></div></div>
+    <div class="progress-segment" data-idx="1"><div class="fill"></div></div>
+    <div class="progress-segment" data-idx="2"><div class="fill"></div></div>
+    <div class="progress-segment" data-idx="3"><div class="fill"></div></div>
+  </div>
+
+  <!-- Card -->
+  <div class="step-card" id="stepCard">
+    <div class="step-inner" id="stepInner">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <p class="step-counter" id="stepCounter">手順 1 / 4</p>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button class="ctrl-btn" id="btnPrev">◀ 前へ</button>
+    <button class="ctrl-btn play-pause" id="btnPlay">⏸ 一時停止</button>
+    <button class="ctrl-btn" id="btnNext">次へ ▶</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <strong>株式会社 環境保全研究所</strong>
+  〒407-0301 山梨県北杜市高根町清里 3545-5896<br>
+  TEL : 0551-48-5300
+</footer>
+
+<script>
+const STEPS = [
+  {
+    label: '手順 1',
+    title: '招待QRを読み取る',
+    body: '<strong>販売員へお声がけください。</strong><br>招待用QRコードをご提示します。',
+    note: null,
+    sub: null,
+    illus: `
+      <div style="position:relative;display:inline-block;width:80px;height:80px;">
+        <div class="qr-ring"></div>
+        <svg viewBox="0 0 80 80" width="80" height="80" style="display:block;">
+          <rect width="80" height="80" rx="12" fill="#FFF5F8" stroke="#E8407A" stroke-width="3"/>
+          <!-- QR pattern simplified -->
+          <rect x="10" y="10" width="24" height="24" rx="3" fill="#E8407A"/>
+          <rect x="15" y="15" width="14" height="14" rx="2" fill="#FFF5F8"/>
+          <rect x="19" y="19" width="6" height="6" fill="#E8407A"/>
+          <rect x="46" y="10" width="24" height="24" rx="3" fill="#E8407A"/>
+          <rect x="51" y="15" width="14" height="14" rx="2" fill="#FFF5F8"/>
+          <rect x="55" y="19" width="6" height="6" fill="#E8407A"/>
+          <rect x="10" y="46" width="24" height="24" rx="3" fill="#E8407A"/>
+          <rect x="15" y="51" width="14" height="14" rx="2" fill="#FFF5F8"/>
+          <rect x="19" y="55" width="6" height="6" fill="#E8407A"/>
+          <rect x="46" y="46" width="6" height="6" fill="#E8407A"/>
+          <rect x="56" y="46" width="6" height="6" fill="#E8407A"/>
+          <rect x="66" y="46" width="6" height="6" fill="#E8407A"/>
+          <rect x="46" y="56" width="6" height="6" fill="#E8407A"/>
+          <rect x="66" y="56" width="6" height="6" fill="#E8407A"/>
+          <rect x="46" y="66" width="6" height="6" fill="#E8407A"/>
+          <rect x="56" y="66" width="6" height="6" fill="#E8407A"/>
+          <rect x="66" y="66" width="6" height="6" fill="#E8407A"/>
+        </svg>
+      </div>
+      <div style="margin-top:12px;font-size:.82rem;color:var(--gray);">QRコードを読み取り</div>
+    `
+  },
+  {
+    label: '手順 2',
+    title: 'メールアドレスを入力',
+    body: '招待メールを送信いたします。<br>このメールアドレスが<strong>ログインIDになります</strong>。',
+    note: '※ キャリアメール（docomo / au / softbank など）は使用不可',
+    sub: null,
+    illus: `
+      <svg class="illus-mail" viewBox="0 0 80 60" width="96" height="72">
+        <rect width="80" height="60" rx="10" fill="#E8407A"/>
+        <rect x="6" y="6" width="68" height="48" rx="7" fill="#FFF5F8"/>
+        <polyline points="6,6 40,34 74,6" fill="none" stroke="#E8407A" stroke-width="3.5" stroke-linejoin="round"/>
+      </svg>
+      <div style="margin-top:8px;font-size:.82rem;color:var(--gray);">招待メールが届きます</div>
+    `
+  },
+  {
+    label: '手順 3',
+    title: 'Web登録（4ステップ）',
+    body: '届いた招待メールの<strong>URLリンク</strong>からWeb登録画面へ進み、<br>4つのSTEPをお手続きください。',
+    note: null,
+    sub: ['登録の事前確認', 'お客様情報の登録', '登録情報の確認', '書類のダウンロード'],
+    illus: `
+      <svg viewBox="0 0 96 56" width="120" height="70">
+        <rect width="96" height="56" rx="8" fill="#2A1220"/>
+        <rect x="4" y="4" width="88" height="38" rx="5" fill="#FFF5F8"/>
+        <!-- progress bar mock -->
+        <rect x="10" y="10" width="76" height="6" rx="3" fill="#F9C6D8"/>
+        <rect x="10" y="10" width="38" height="6" rx="3" fill="#E8407A"/>
+        <!-- lines mock -->
+        <rect x="10" y="22" width="50" height="4" rx="2" fill="#E8407A" opacity=".5"/>
+        <rect x="10" y="30" width="70" height="3" rx="1.5" fill="#2A1220" opacity=".15"/>
+        <rect x="10" y="36" width="60" height="3" rx="1.5" fill="#2A1220" opacity=".12"/>
+        <!-- bottom bar -->
+        <rect x="0" y="46" width="96" height="10" rx="0 0 8 8" fill="#E8407A"/>
+        <rect x="34" y="49" width="28" height="4" rx="2" fill="#FFF5F8"/>
+      </svg>
+      <div style="margin-top:8px;font-size:.82rem;color:var(--gray);">Web登録フォームに入力</div>
+    `
+  },
+  {
+    label: '手順 4',
+    title: '登録完了 → 注文スタート！',
+    body: 'Web登録が完了すると<strong>メールが届きます。</strong><br>メール記載のURLからログインして<br><strong>ご注文いただけます！</strong>',
+    note: null,
+    sub: null,
+    links: [
+      { label: 'PCサイト', url: 'https://www.kankyo-daiko.jp/' },
+      { label: 'スマホサイト', url: 'https://www.kankyo-daiko.jp/sp/' }
+    ],
+    illus: `
+      <svg class="check-pop" viewBox="0 0 72 72" width="80" height="80">
+        <circle cx="36" cy="36" r="34" fill="#E8407A"/>
+        <polyline points="20,37 31,49 54,24" fill="none" stroke="#FFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div style="margin-top:8px;font-size:.82rem;color:var(--gray);">登録完了！注文できます</div>
+    `
+  }
+];
+
+let current = 0;
+let playing = true;
+let timer = null;
+let progressTimer = null;
+let elapsed = 0;
+const DUR = 3000; // ms per step
+
+const inner      = document.getElementById('stepInner');
+const counter    = document.getElementById('stepCounter');
+const btnPrev    = document.getElementById('btnPrev');
+const btnNext    = document.getElementById('btnNext');
+const btnPlay    = document.getElementById('btnPlay');
+const segments   = document.querySelectorAll('.progress-segment');
+
+function renderStep(idx) {
+  const s = STEPS[idx];
+  let html = `
+    <div class="step-num">
+      <div class="num-badge">${idx + 1}</div>
+      <div class="num-label">${s.label}</div>
+    </div>
+    <div class="step-title">${s.title}</div>
+    <div class="step-body">
+      <p>${s.body}</p>
+      ${s.note ? `<span class="note">${s.note}</span>` : ''}
+      ${s.sub ? `<div class="substeps">${s.sub.map(t => `<span class="substep">${t}</span>`).join('')}</div>` : ''}
+      ${s.links ? `<div class="links">${s.links.map(l => `<a class="link-btn" href="${l.url}" target="_blank">🛒 ${l.label}</a>`).join('')}</div>` : ''}
+    </div>
+    ${s.illus ? `<div class="step-illus">${s.illus}</div>` : ''}
+  `;
+  inner.innerHTML = html;
+  inner.classList.remove('visible');
+  requestAnimationFrame(() => requestAnimationFrame(() => inner.classList.add('visible')));
+  counter.textContent = `手順 ${idx + 1} / ${STEPS.length}`;
+  btnPrev.disabled = idx === 0;
+  btnNext.disabled = idx === STEPS.length - 1 && !playing;
+}
+
+function updateSegments(idx, fillPct) {
+  segments.forEach((seg, i) => {
+    const fill = seg.querySelector('.fill');
+    if (i < idx) {
+      fill.style.width = '100%';
+      fill.style.transition = 'none';
+    } else if (i === idx) {
+      fill.style.width = fillPct + '%';
+      fill.style.transition = playing ? 'width 80ms linear' : 'none';
+    } else {
+      fill.style.width = '0%';
+      fill.style.transition = 'none';
+    }
+  });
+}
+
+function startProgress() {
+  elapsed = 0;
+  clearInterval(progressTimer);
+  progressTimer = setInterval(() => {
+    elapsed += 80;
+    const pct = Math.min((elapsed / DUR) * 100, 100);
+    updateSegments(current, pct);
+    if (elapsed >= DUR) {
+      clearInterval(progressTimer);
+      if (current < STEPS.length - 1) {
+        goTo(current + 1);
+      } else {
+        // loop back
+        goTo(0);
+      }
+    }
+  }, 80);
+}
+
+function stopProgress() {
+  clearInterval(progressTimer);
+  progressTimer = null;
+}
+
+function goTo(idx) {
+  current = idx;
+  renderStep(current);
+  updateSegments(current, 0);
+  if (playing) startProgress();
+  else updateSegments(current, 0);
+}
+
+function togglePlay() {
+  playing = !playing;
+  if (playing) {
+    btnPlay.textContent = '⏸ 一時停止';
+    startProgress();
+  } else {
+    btnPlay.textContent = '▶ 再生';
+    stopProgress();
+  }
+}
+
+btnPrev.addEventListener('click', () => {
+  stopProgress();
+  if (current > 0) goTo(current - 1);
+});
+btnNext.addEventListener('click', () => {
+  stopProgress();
+  if (current < STEPS.length - 1) goTo(current + 1);
+});
+btnPlay.addEventListener('click', togglePlay);
+
+// Click on segment to jump
+segments.forEach((seg) => {
+  seg.addEventListener('click', () => {
+    const idx = parseInt(seg.dataset.idx);
+    stopProgress();
+    playing = true;
+    btnPlay.textContent = '⏸ 一時停止';
+    goTo(idx);
+  });
+});
+
+// init
+goTo(0);
+
+// ===== BENEFIT POP → FLOW ANIMATION (統合) =====
+(function() {
+  const HB_ITEMS   = ['hb0','hb1','hb2','hb3'];
+  const FLOW_NODES  = ['fn0','fn1','fn2','fn3','fn4'];
+  const FLOW_ARROWS = ['fa0','fa1','fa2','fa3'];
+
+  // ポップ間隔 575ms × 4 = 2300ms で全部揃う
+  // 静止1000ms → フロー開始 = 3300ms後
+  const POP_INTERVAL  = 575;
+  const FLOW_START    = 3300; // popAll開始からフロー開始までのオフセット
+  const FLOW_DELAYS   = [0, 700, 1400, 2100, 2900, 3600, 4300, 5000, 5600];
+  const LOOP_TOTAL    = 13000; // ループ全体(pop2.3s + 静止1s + flow5.6s + 余白)
+
+  function resetAll() {
+    HB_ITEMS.forEach(id   => document.getElementById(id).classList.remove('pop'));
+    FLOW_NODES.forEach(id  => document.getElementById(id).classList.remove('show'));
+    FLOW_ARROWS.forEach(id => document.getElementById(id).classList.remove('show'));
+  }
+
+  function playAll() {
+    resetAll();
+    // ポンポンポン
+    HB_ITEMS.forEach((id, i) => {
+      setTimeout(() => document.getElementById(id).classList.add('pop'), i * POP_INTERVAL);
+    });
+    // pop完了＋1秒後にフロー開始
+    FLOW_DELAYS.forEach((delay, i) => {
+      const el = i < 4
+        ? document.getElementById(FLOW_NODES[i])
+        : document.getElementById(FLOW_ARROWS[i - 4]);
+      // 交互に node/arrow
+    });
+    // node0
+    setTimeout(() => document.getElementById('fn0').classList.add('show'), FLOW_START + FLOW_DELAYS[0]);
+    // arrow0
+    setTimeout(() => document.getElementById('fa0').classList.add('show'), FLOW_START + FLOW_DELAYS[1]);
+    // node1
+    setTimeout(() => document.getElementById('fn1').classList.add('show'), FLOW_START + FLOW_DELAYS[2]);
+    // arrow1
+    setTimeout(() => document.getElementById('fa1').classList.add('show'), FLOW_START + FLOW_DELAYS[3]);
+    // node2
+    setTimeout(() => document.getElementById('fn2').classList.add('show'), FLOW_START + FLOW_DELAYS[4]);
+    // arrow2
+    setTimeout(() => document.getElementById('fa2').classList.add('show'), FLOW_START + FLOW_DELAYS[5]);
+    // node3
+    setTimeout(() => document.getElementById('fn3').classList.add('show'), FLOW_START + FLOW_DELAYS[6]);
+    // arrow3
+    setTimeout(() => document.getElementById('fa3').classList.add('show'), FLOW_START + FLOW_DELAYS[7]);
+    // node4（登録手順はこちら）
+    setTimeout(() => document.getElementById('fn4').classList.add('show'), FLOW_START + FLOW_DELAYS[8]);
+  }
+
+  playAll();
+  setInterval(playAll, LOOP_TOTAL);
+})();
+</script>
+</body>
+</html>
