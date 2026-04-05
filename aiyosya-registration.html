@@ -511,6 +511,23 @@
   }
   .ctrl-btn.play-pause:hover { background: linear-gradient(135deg, var(--pink-d) 0%, #8B2440 100%); border-color: var(--pink-d); box-shadow: 0 8px 24px rgba(185,50,80,.38); }
 
+  .icon-btn {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    border-radius: 50%;
+    letter-spacing: 0;
+  }
+  .icon-btn.play-pause {
+    width: 56px;
+    height: 56px;
+    font-size: 1rem;
+  }
+
   .step-counter {
     font-size: .78rem;
     color: var(--gray);
@@ -704,9 +721,9 @@
 
   <!-- Controls -->
   <div class="controls">
-    <button class="ctrl-btn" id="btnPrev">◀ 前へ</button>
-    <button class="ctrl-btn play-pause" id="btnPlay">⏸ 一時停止</button>
-    <button class="ctrl-btn" id="btnNext">次へ ▶</button>
+    <button class="ctrl-btn icon-btn" id="btnPrev">&#9664;</button>
+    <button class="ctrl-btn play-pause" id="btnPlay">一時停止</button>
+    <button class="ctrl-btn icon-btn" id="btnNext">&#9654;</button>
   </div>
 </div>
 
@@ -1002,10 +1019,10 @@ function goTo(idx) {
 function togglePlay() {
   playing = !playing;
   if (playing) {
-    btnPlay.textContent = '⏸ 一時停止';
+    btnPlay.textContent = '一時停止';
     startProgress();
   } else {
-    btnPlay.textContent = '▶ 再生';
+    btnPlay.textContent = '再生';
     stopProgress();
   }
 }
@@ -1026,7 +1043,7 @@ segments.forEach((seg) => {
     const idx = parseInt(seg.dataset.idx);
     stopProgress();
     playing = true;
-    btnPlay.textContent = '⏸ 一時停止';
+    btnPlay.textContent = '一時停止';
     goTo(idx);
   });
 });
